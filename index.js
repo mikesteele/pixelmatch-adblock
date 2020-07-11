@@ -18,11 +18,12 @@ const doCanvasElementsMatch = (canvas1, canvas2) => {
   const diff = diffCtx.createImageData(width, height);
   const image1 = canvas1.getContext('2d').getImageData(0, 0, width, height);
   const image2 = canvas2.getContext('2d').getImageData(0, 0, width, height);
-  pixelmatch(image1.data, image2.data, diff.data, width, height, { threshold: 0.1 });
+  const mismatchedPixels = pixelmatch(image1.data, image2.data, diff.data, width, height, { threshold: 0.1 });
   diffCtx.putImageData(diff, 0, 0);
   document.body.appendChild(canvas);
 
-  return true;
+  // This threshold could be even lower
+  return mismatchedPixels < 50;
 };
 
 const createCanvasFromImageElement = image => {
