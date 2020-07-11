@@ -8,7 +8,7 @@ const htmlToCanvas = el => {
   return htmlToImage.toCanvas(el);
 };
 
-const doImageElementsMatch = (canvas1, canvas2) => {
+const doCanvasElementsMatch = (canvas1, canvas2) => {
   const width = canvas1.width;
   const height = canvas1.height;
 
@@ -60,9 +60,8 @@ const isFacebookSponsoredLink = el => {
     const createFacebookReferenceCanvasPromise = createFacebookReferenceCanvas();
     const htmlToCanvasPromise = htmlToCanvas(el);
     Promise.all([createFacebookReferenceCanvasPromise, htmlToCanvasPromise])
-      .then(images => {
-        images.forEach(image => document.body.appendChild(image));
-        resolve(doImageElementsMatch(images[0], images[1]));
+      .then(canvases => {
+        resolve(doCanvasElementsMatch(canvases[0], canvases[1]));
       });
   });
 };
