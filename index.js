@@ -57,15 +57,15 @@ const createFBReferenceCanvas = () => {
 }
 
 const isFBSponsoredLink = el => {
-  return new Promise(resolve => {
-    const createFBReferenceCanvasPromise = createFBReferenceCanvas();
-    const htmlToCanvasPromise = htmlToCanvas(el);
-    Promise.all([createFBReferenceCanvasPromise, htmlToCanvasPromise])
-      .then(canvases => {
-        // For debugging, render the canvases to the screen
-        canvases.forEach(canvas => document.body.appendChild(canvas));
-        resolve(doCanvasElementsMatch(canvases[0], canvases[1]));
-      });
+  return new Promise(async resolve => {
+    const fbReferenceCanvas = await createFBReferenceCanvas();
+    const domCanvas = await htmlToCanvas(el);
+
+    // For debugging, render the canvases to the screen
+    document.body.appendChild(fbReferenceCanvas);
+    document.body.appendChild(domCanvas);
+
+    resolve(doCanvasElementsMatch(fbReferenceCanvas, domCanvas));
   });
 };
 
