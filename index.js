@@ -6,7 +6,7 @@ import fbSponsoredPostReference from './fb.png';
 
 const htmlToImageElement = el => {
   return new Promise(resolve => {
-    htmlToImage.toPng(node)
+    htmlToImage.toPng(el)
       .then(dataUrl => {
         const img = new Image();
         img.onload = () => resolve(img);
@@ -33,7 +33,8 @@ const isFacebookSponsoredLink = el => {
     const htmlToImageElementPromise = htmlToImageElement(el);
     Promise.all([createFacebookReferenceImagePromise, htmlToImageElementPromise])
       .then(images => {
-        resolve(doImageElementsMatch(images[1], images[2]));
+        images.forEach(image => document.body.appendChild(image));
+        //resolve(doImageElementsMatch(images[1], images[2]));
       });
   });
 };
