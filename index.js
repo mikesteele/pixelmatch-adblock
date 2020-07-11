@@ -61,6 +61,8 @@ const isFacebookSponsoredLink = el => {
     const htmlToCanvasPromise = htmlToCanvas(el);
     Promise.all([createFacebookReferenceCanvasPromise, htmlToCanvasPromise])
       .then(canvases => {
+        // For debugging, render the canvases to the screen
+        canvases.forEach(canvas => document.body.appendChild(canvas));
         resolve(doCanvasElementsMatch(canvases[0], canvases[1]));
       });
   });
