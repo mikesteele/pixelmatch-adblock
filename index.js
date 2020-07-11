@@ -9,7 +9,6 @@ const htmlToCanvas = el => {
 };
 
 const doImageElementsMatch = (canvas1, canvas2) => {
-  // See https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/naturalWidth
   const width = canvas1.width;
   const height = canvas1.height;
 
@@ -27,7 +26,6 @@ const doImageElementsMatch = (canvas1, canvas2) => {
 };
 
 const createCanvasFromImageElement = image => {
-  // TODO - Does this work?
   const width = image.naturalWidth;
   const height = image.naturalHeight;
 
