@@ -40,7 +40,7 @@ const createCanvasFromImageElement = image => {
   return canvas;
 };
 
-const createFacebookReferenceImage = () => {
+const createFBReferenceImage = () => {
   return new Promise(resolve => {
     const img = new Image();
     img.onload = () => resolve(img);
@@ -48,19 +48,19 @@ const createFacebookReferenceImage = () => {
   });
 };
 
-const createFacebookReferenceCanvas = () => {
+const createFBReferenceCanvas = () => {
   return new Promise(resolve => {
-    createFacebookReferenceImage()
+    createFBReferenceImage()
       .then(createCanvasFromImageElement)
       .then(resolve);
   });
 }
 
-const isFacebookSponsoredLink = el => {
+const isFBSponsoredLink = el => {
   return new Promise(resolve => {
-    const createFacebookReferenceCanvasPromise = createFacebookReferenceCanvas();
+    const createFBReferenceCanvasPromise = createFBReferenceCanvas();
     const htmlToCanvasPromise = htmlToCanvas(el);
-    Promise.all([createFacebookReferenceCanvasPromise, htmlToCanvasPromise])
+    Promise.all([createFBReferenceCanvasPromise, htmlToCanvasPromise])
       .then(canvases => {
         // For debugging, render the canvases to the screen
         canvases.forEach(canvas => document.body.appendChild(canvas));
@@ -70,5 +70,5 @@ const isFacebookSponsoredLink = el => {
 };
 
 window.pixelmatch_adblock = {
-  isFacebookSponsoredLink,
+  isFBSponsoredLink,
 };

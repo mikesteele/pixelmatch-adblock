@@ -27,5 +27,5 @@ yarn build
 Run `dist/index.js` on FB, then you can try to detect a sponsored link:
 
 ```
-pixelmatch_adblock.isFacebookSponsoredLink(document.getElementById('feedlabel_263;1098900509;10223658229339304;10223658229339304;1594478623:1347754931747571503:5:0'));
+pixelmatch_adblock.isFBSponsoredLink(document.getElementById('feedlabel_263;1098900509;10223658229339304;10223658229339304;1594478623:1347754931747571503:5:0'));
 ```
