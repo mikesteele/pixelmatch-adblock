@@ -87,15 +87,15 @@ const findAllFBSponsoredPosts = async () => {
   const fbReferenceCanvas = await createFBReferenceCanvas();
   const allNodes = [...document.body.getElementsByTagName('*')];
   console.log(fbReferenceCanvas.height)
-  // Run in series
-  for (const node of allNodes) {
+  // Run in parallel
+  allNodes.forEach(async node => {
     const isSponsored = await isFBSponsoredLink(node, fbReferenceCanvas);
     if (isSponsored) {
       console.log('Found sponsored link:');
       console.log(node);
       node.style.outline = '5px solid red';
     }
-  }
+  });
 };
 
 window.pixelmatch_adblock = {
