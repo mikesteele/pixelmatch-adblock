@@ -24,12 +24,17 @@ yarn
 yarn build
 ```
 
-Run `dist/index.js` on FB, then you can try to detect a sponsored link:
+Run `dist/index.js` on FB, then you can find all sponsored links on the page:
 
 ```
-pixelmatch_adblock.isFBSponsoredLink(
-  document.getElementById('feedlabel_263;1098900509;10223658229339304;10223658229339304;1594478623:1347754931747571503:5:0')
-).then(isSponsored => console.log(isSponsored));
+pixelmatch_adblock.findAllFBSponsoredPosts();
 ```
 
-This will also render the reference, DOM, and diff canvases at the bottom of the document body.
+To run with debug mode, run:
+
+```
+pixelmatch_adblock.setDebugMode(true);
+pixelmatch_adblock.findAllFBSponsoredPosts();
+```
+
+Debug mode will render the reference, DOM, and diff canvases at the bottom of the document body.
