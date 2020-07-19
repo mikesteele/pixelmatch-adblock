@@ -1,5 +1,9 @@
 const pixelmatch = require('pixelmatch');
 const htmlToImage = require('html-to-image');
+const fastdom = require('fastdom');
+
+let IN_DEBUG_MODE = false;
+const setDebugMode = inDebugMode => IN_DEBUG_MODE = inDebugMode;
 
 // Using webpack url-loader, we can load the reference image as a Base64 URI to re-create on the client
 import fbSponsoredPostReference from './fb.png';
@@ -20,7 +24,10 @@ const doCanvasElementsMatch = (canvas1, canvas2) => {
   const image2 = canvas2.getContext('2d').getImageData(0, 0, width, height);
   const mismatchedPixels = pixelmatch(image1.data, image2.data, diff.data, width, height, { threshold: 0.1 });
   diffCtx.putImageData(diff, 0, 0);
-  document.body.appendChild(canvas);
+
+  if (IN_DEBUG_MODE) {
+    document.body.appendChild(canvas);
+  }
 
   // This threshold could be even lower
   return mismatchedPixels < 50;
@@ -56,19 +63,50 @@ const createFBReferenceCanvas = () => {
   });
 }
 
-const isFBSponsoredLink = el => {
+const isFBSponsoredLink = (el, fbReferenceCanvas) => {
   return new Promise(async resolve => {
-    const fbReferenceCanvas = await createFBReferenceCanvas();
-    const domCanvas = await htmlToCanvas(el);
+    // The actual height of the element in the DOM is half
+    // of the height it becomes when transformed into a canvas
+    // via htmlToCanvas().
+    // I'm not sure why this is, may be a coincedence.
+    const adjustedReferenceHeight = fbReferenceCanvas.height / 2;
 
-    // For debugging, render the canvases to the screen
-    document.body.appendChild(fbReferenceCanvas);
-    document.body.appendChild(domCanvas);
+    fastdom.measure(async () => {
+      const elHeight = el.clientHeight;
+      // This is for performance.
+      // It's very slow to transform every element on the page into a canvas.
+      // So we transform those elements who match the same height.
+      // We're using height instead of width because FB post width changes
+      // based on screen-size, but height doesn't.
+      if (elHeight === adjustedReferenceHeight) {
+        const domCanvas = await htmlToCanvas(el);
+        if (IN_DEBUG_MODE) {
+          document.body.appendChild(fbReferenceCanvas);
+          document.body.appendChild(domCanvas);
+        }
+        resolve(doCanvasElementsMatch(fbReferenceCanvas, domCanvas));
+      } else {
+        resolve(false);
+      }
+    });
+  });
+};
 
-    resolve(doCanvasElementsMatch(fbReferenceCanvas, domCanvas));
+const findAllFBSponsoredPosts = async () => {
+  const fbReferenceCanvas = await createFBReferenceCanvas();
+  const allNodes = [...document.body.getElementsByTagName('*')];
+  // Run in parallel
+  allNodes.forEach(async node => {
+    const isSponsored = await isFBSponsoredLink(node, fbReferenceCanvas);
+    if (isSponsored) {
+      console.log('Found sponsored link:');
+      console.log(node);
+      node.style.outline = '5px solid red';
+    }
   });
 };
 
 window.pixelmatch_adblock = {
-  isFBSponsoredLink,
+  findAllFBSponsoredPosts,
+  setDebugMode
 };
