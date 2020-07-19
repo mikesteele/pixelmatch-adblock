@@ -17,9 +17,11 @@
   },
   "homepage": "https://github.com/mikesteele/pixelmatch-adblock#readme",
   "dependencies": {
+    "chai": "^4.2.0",
     "fastdom": "^1.0.9",
     "file-loader": "^6.0.0",
     "html-to-image": "^0.1.1",
+    "jest": "^26.1.0",
     "pixelmatch": "^5.2.1",
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0"
