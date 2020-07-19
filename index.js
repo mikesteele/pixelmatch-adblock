@@ -70,6 +70,8 @@ const isFBSponsoredLink = (el, fbReferenceCanvas) => {
       // This is for performance.
       // It's very slow to transform every element on the page into a canvas.
       // So we transform those elements who match the same height.
+      // We're using height instead of width because FB post width changes
+      // based on screen-size, but height doesn't.
       if (elHeight === adjustedReferenceHeight) {
         const domCanvas = await htmlToCanvas(el);
         // For debugging, render the canvases to the screen
