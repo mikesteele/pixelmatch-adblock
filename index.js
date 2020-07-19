@@ -2,6 +2,9 @@ const pixelmatch = require('pixelmatch');
 const htmlToImage = require('html-to-image');
 const fastdom = require('fastdom');
 
+let IN_DEBUG_MODE = false;
+const setDebugMode = inDebugMode => IN_DEBUG_MODE = inDebugMode;
+
 // Using webpack url-loader, we can load the reference image as a Base64 URI to re-create on the client
 import fbSponsoredPostReference from './fb.png';
 
@@ -21,7 +24,10 @@ const doCanvasElementsMatch = (canvas1, canvas2) => {
   const image2 = canvas2.getContext('2d').getImageData(0, 0, width, height);
   const mismatchedPixels = pixelmatch(image1.data, image2.data, diff.data, width, height, { threshold: 0.1 });
   diffCtx.putImageData(diff, 0, 0);
-  //document.body.appendChild(canvas);
+
+  if (IN_DEBUG_MODE) {
+    document.body.appendChild(canvas);
+  }
 
   // This threshold could be even lower
   return mismatchedPixels < 50;
@@ -74,9 +80,10 @@ const isFBSponsoredLink = (el, fbReferenceCanvas) => {
       // based on screen-size, but height doesn't.
       if (elHeight === adjustedReferenceHeight) {
         const domCanvas = await htmlToCanvas(el);
-        // For debugging, render the canvases to the screen
-        // document.body.appendChild(fbReferenceCanvas);
-        // document.body.appendChild(domCanvas);
+        if (IN_DEBUG_MODE) {
+          document.body.appendChild(fbReferenceCanvas);
+          document.body.appendChild(domCanvas);
+        }
         resolve(doCanvasElementsMatch(fbReferenceCanvas, domCanvas));
       } else {
         resolve(false);
@@ -88,7 +95,6 @@ const isFBSponsoredLink = (el, fbReferenceCanvas) => {
 const findAllFBSponsoredPosts = async () => {
   const fbReferenceCanvas = await createFBReferenceCanvas();
   const allNodes = [...document.body.getElementsByTagName('*')];
-  console.log(fbReferenceCanvas.height)
   // Run in parallel
   allNodes.forEach(async node => {
     const isSponsored = await isFBSponsoredLink(node, fbReferenceCanvas);
@@ -102,4 +108,5 @@ const findAllFBSponsoredPosts = async () => {
 
 window.pixelmatch_adblock = {
   findAllFBSponsoredPosts,
+  setDebugMode
 };
