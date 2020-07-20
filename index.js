@@ -121,15 +121,58 @@ const cropCanvasFromBottom = (originalCanvas, postCropHeight) => {
   return canvas;
 };
 
-const _isFBPost = async (el) => {
-  const domCanvas = await htmlToCanvas(el);
-  const croppedCanvas = cropCanvasFromBottom(domCanvas, 100);
-  const fbPostCanvas = await createCanvasFromImageURI(fbPostFooterReference);
-  return doCanvasElementsMatch(croppedCanvas, fbPostCanvas);
+const findMatchingParent = async (node, matchFunction) => {
+  if (node) {
+    const isMatch = await matchFunction(node);
+    if (isMatch) {
+      return node;
+    } else if (node.parentNode) {
+      return await findMatchingParent(node.parentNode,  matchFunction);
+    }
+  } else {
+    return null;
+  }
 }
+
+const isFBPost = async (el) => {
+  return new Promise(async resolve => {
+    fastdom.measure(async () => {
+      if (el.clientHeight > 200) {
+        const domCanvas = await htmlToCanvas(el);
+        const croppedCanvas = cropCanvasFromBottom(domCanvas, 100);
+        const fbPostCanvas = await createCanvasFromImageURI(fbPostFooterReference);
+        resolve(doCanvasElementsMatch(croppedCanvas, fbPostCanvas));
+      } else {
+        resolve(false);
+      }
+    });
+  });
+}
+
+const blockAllFBSponsoredPosts = async () => {
+  const fbReferenceCanvas = await createCanvasFromImageURI(fbSponsoredPostReference);
+  const allNodes = [...document.body.getElementsByTagName('*')];
+  // Run in parallel
+  allNodes.forEach(async node => {
+    const isSponsored = await isFBSponsoredLink(node, fbReferenceCanvas);
+    if (isSponsored) {
+      console.log('Found sponsored link:');
+      console.log(node);
+      node.style.outline = '5px solid red';
+
+      const post = await findMatchingParent(node, isFBPost);
+      console.log('Post:');
+      console.log(post);
+      if (post) {
+        post.style.outline = '5px solid red';
+      }
+    }
+  });
+};
 
 window.pixelmatch_adblock = {
   findAllFBSponsoredPosts,
   setDebugMode,
-  _isFBPost
+  blockAllFBSponsoredPosts,
+  isFBPost
 };
