@@ -161,9 +161,9 @@ const blockAllFBSponsoredPosts = async () => {
       node.style.outline = '5px solid red';
 
       const post = await findMatchingParent(node, isFBPost);
-      console.log('Post:');
-      console.log(post);
       if (post) {
+        console.log('Found corresponding post:');
+        console.log(post);
         post.style.outline = '5px solid red';
       }
     }
