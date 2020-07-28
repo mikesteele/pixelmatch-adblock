@@ -24,17 +24,17 @@ yarn
 yarn build
 ```
 
-Run `dist/index.js` on FB, then you can find all sponsored links on the page:
+Run `dist/index.js` on FB, then you can find all sponsored posts on the page:
 
 ```
-pixelmatch_adblock.findAllFBSponsoredPosts();
+pixelmatch_adblock.blockAllFBSponsoredPosts();
 ```
 
 To run with debug mode, run:
 
 ```
 pixelmatch_adblock.setDebugMode(true);
-pixelmatch_adblock.findAllFBSponsoredPosts();
+pixelmatch_adblock.blockAllFBSponsoredPosts();
 ```
 
 Debug mode will render the reference, DOM, and diff canvases at the bottom of the document body.
