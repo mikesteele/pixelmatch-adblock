@@ -1,5 +1,8 @@
 # pixelmatch-adblock
-An adblocker based on how ads look
+
+An adblocker based on how ads look.
+
+This is an experiment and is not meant for production use.
 
 # Intro
 
