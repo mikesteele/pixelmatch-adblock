@@ -2,7 +2,7 @@
 
 An adblocker based on how ads look.
 
-This is an experiment and is not meant for production use.
+This is a proof of concept for a single website (FB) and is not meant for production use.
 
 # Intro
 
