@@ -10,7 +10,7 @@ Some sites get around adblockers by obscuring their DOM. They add additional hid
 
 But they can't get around is how the final DOM looks. If we can compare the DOM's look to a reference image, we can adblock.
 
-This is only a proof of concept. It can detect a sponsored link, but doesn't include removing it from the DOM. It bundles reference photos as data URI to be recreated on the client. It uses https://github.com/bubkoo/html-to-image to transform DOM into a canvas and https://github.com/mapbox/pixelmatch to compare it to the reference.
+This is only a proof of concept. It can detect a sponsored post, but doesn't include removing it from the DOM. It bundles reference photos as data URI to be recreated on the client. It uses https://github.com/bubkoo/html-to-image to transform DOM into a canvas and https://github.com/mapbox/pixelmatch to compare it to the reference.
 
 # Pixel matching results
 
